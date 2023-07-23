@@ -32,3 +32,5 @@
 *.app
 
 prueba.cpp
+.vscode/
+```

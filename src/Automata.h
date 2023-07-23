@@ -59,21 +59,21 @@ State* Transition::next_state(State* s, char c){
     return nullptr;
 }
 class Automata{
-    State* initialState;
-    State* finalState;
-    set<char> alphabet;
     set<State*> states;
+    State* initialState;
+    set<State*> finalStates;
+    set<char> alphabet;
     Transition* function_transition;
     static Automata* instance;
-    Automata(State* init, State* final, set<char> alphabet, set<State*> states, Transition* function_transition){
+    Automata(State* init, set<State*> final, set<char> alphabet, set<State*> states, Transition* function_transition){
         this->initialState = init;
-        this->finalState = final;
+        this->finalStates = final;
         this->alphabet = alphabet;
         this->states = states;
         this->function_transition = function_transition;
     }
 public:
-    Automata* getInstance(State* init, State* final, set<char> alphabet, set<State*> states, Transition* function_transition){
+    Automata* getInstance(State* init, set<State*> final, set<char> alphabet, set<State*> states, Transition* function_transition){
         if(instance == 0){
             instance = new Automata(init, final, alphabet, states, function_transition);
         }
@@ -85,8 +85,9 @@ public:
             current_state = function_transition->next_state(current_state, i);
             if(current_state == nullptr) return false;
         }
-        return (current_state == finalState)?true:false;
+        return (finalStates.find(current_state) != finalStates.end())?true:false;
     }
+
     void reset(){
         instance = nullptr;
     }

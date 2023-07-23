@@ -72,7 +72,8 @@ State* get_state(set<State*> states, int id){
     }
     return nullptr;
 }
-pair<State*, State*> get_init_final(set<State*> states){
+pair<State*, set<State*>> get_init_final(set<State*> states){
+    set<State*> finals;
     int id = -1;
     while(!get_state(states, id)){
         system("clear");
@@ -81,13 +82,18 @@ pair<State*, State*> get_init_final(set<State*> states){
     }
     State* init = get_state(states, id);
     id = -1;
-    while (!get_state(states, id)){
-        system("clear");
-        cout << "Enter final state: ";
-        id = validar_numero(id);
+    cout<<"Enter number of final states: ";
+    int n = validar_numero(n, "of final states");
+    for(int i = 0; i < n; i++){
+        id = -1;
+        while (!get_state(states, id)){
+            system("clear");
+            cout << "Enter final state "<<i+1<<": ";
+            id = validar_numero(id);
+        }
+        finals.insert(get_state(states, id));
     }
-    State* final = get_state(states, id);
-    return make_pair(init, final);
+    return make_pair(init, finals);
 }
 
 set<State*> create_states() {
@@ -123,7 +129,7 @@ Automata* create_automata(){
     set<State*> states = create_states();
     set<char> alphabet = get_alphabet();
     Transition* t = make_function_transition(states, alphabet);
-    pair<State*, State*> init_final = get_init_final(states);
+    pair<State*, set<State*>> init_final = get_init_final(states);
     Automata* a = a->getInstance(init_final.first, init_final.second, alphabet, states, t);
     return a;
 }

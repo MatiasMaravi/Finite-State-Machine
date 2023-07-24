@@ -81,7 +81,7 @@ State* get_init(set<State*> states){
     }
     return get_state(states, id);
 }
-set<State*> get_init_final(set<State*> states){
+set<State*> get_finals(set<State*> states){
     set<State*> finals;
     set<int> ids;
     int id = -1;
@@ -140,7 +140,7 @@ Automata* create_automata(){
     set<char> alphabet = get_alphabet();
     Transition* t = make_function_transition(states, alphabet);
     State* init = get_init(states);
-    set<State*> finals = get_init_final(states);
+    set<State*> finals = get_finals(states);
     Automata* a = a->getInstance(init, finals, alphabet, states, t);
     return a;
 }

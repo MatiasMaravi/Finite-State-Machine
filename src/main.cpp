@@ -19,7 +19,7 @@ using std::set;
  * @brief Obtiene el sistema operativo en el que se está ejecutando el programa.
  * @return El sistema operativo en el que se está ejecutando el programa.
 */
-string getOperatingSystem() {
+string getOperatingSystem(){
     #ifdef _WIN32
         return "Windows";
     #elif __APPLE__

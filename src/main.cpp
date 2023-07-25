@@ -11,12 +11,29 @@ using std::numeric_limits;
 using std::streamsize;
 using std::set;
 
+string getOperatingSystem() {
+    #ifdef _WIN32
+        return "Windows";
+    #elif __APPLE__
+        return "macOS";
+    #elif __linux__
+        return "Linux";
+    #else
+        return "Unknown";
+    #endif
+}
+void clear_console(){
+    string os = getOperatingSystem();
+    if(os == "Windows") system("cls");
+    else system("clear");
+}
+
 /**
  * @brief Muestra un mensaje en la consola y espera a que el usuario presione Enter.
  * @param w El mensaje a mostrar.
 */
 void message(string w){
-    system("clear");
+    clear_console();
     cout << w << endl;
     system("read -p 'Press Enter to continue...' var");
 }
@@ -34,7 +51,7 @@ void message(string w){
 int validar_numero(int &n, const string &w = "") {
     // Validación del valor de entrada
     while (!(cin >> n)) {
-        system("clear");
+        clear_console();
         cout << "Invalid input. Please enter a valid number " << w << ": ";
         cin.clear(); // Limpia la bandera de error de cin
         cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Ignora el resto de la línea incorrecta
@@ -48,7 +65,7 @@ int validar_numero(int &n, const string &w = "") {
  * @return La opción seleccionada por el usuario.
  */
 string menu(){
-    system("clear");
+    clear_console();
     string choice;
     cout << "1. Create automata" << endl;
     cout << "2. Run automata" << endl;
@@ -64,7 +81,7 @@ string menu(){
  * @return true si la palabra es aceptada por el autómata, false en caso contrario.
  */
 bool run_automata(Automata* a){
-    system("clear");
+    clear_console();
     string word = "";
     cout << "Enter word: ";
     cin >> word;
@@ -79,7 +96,7 @@ char validar_char(int i){
     string c;
     do
     {
-        system("clear");
+        clear_console();
         cout << "Enter symbol "<<i+1<<": ";
         cin>>c;
     } while (c.length() != 1);
@@ -126,7 +143,7 @@ State* get_state(set<State*> states, int id){
 State* get_init(set<State*> states){
     int id = -1;
     while(!get_state(states, id)){
-        system("clear");
+        clear_console();
         cout << "Enter initial state: ";
         id = validar_numero(id);
     }
@@ -146,7 +163,7 @@ set<State*> get_finals(set<State*> states){
     cout<<"Enter number of final states: ";
     int n = validar_numero(n, "of final states");
     while(n>states.size()){
-        system("clear");
+        clear_console();
         cout<<"Number of final states must be less than or equal to number of states"<<endl;
         cout<<"Enter number of final states: ";
         n = validar_numero(n, "of final states");
@@ -154,7 +171,7 @@ set<State*> get_finals(set<State*> states){
     for(int i = 0; i < n; i++){
         id = -1;
         while (!get_state(states, id) || ids.find(id) != ids.end()){
-            system("clear");
+            clear_console();
             cout << "Enter final state "<<i+1<<": ";
             id = validar_numero(id);
         }
@@ -189,7 +206,7 @@ Transition* make_function_transition(set<State*> states, set<char> alphabet){
     Transition* t = new Transition(states, alphabet);
     for(auto i: states){
         for(auto j: alphabet){
-            system("clear");
+            clear_console();
             cout << "Enter next state for state " << i->get_id() << " and symbol " << j << ": ";
             int id;
             id = validar_numero(id);
@@ -208,7 +225,7 @@ Transition* make_function_transition(set<State*> states, set<char> alphabet){
  * @return El autómata creado.
 */
 Automata* create_automata(){
-    system("clear");
+    clear_console();
     set<State*> states = create_states();
     set<char> alphabet = get_alphabet();
     Transition* t = make_function_transition(states, alphabet);

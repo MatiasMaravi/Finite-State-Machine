@@ -10,7 +10,11 @@ using std::system;
 using std::numeric_limits;
 using std::streamsize;
 using std::set;
-
+#ifdef _WIN32
+#define PAUSE_COMMAND "pause"
+#else
+#define PAUSE_COMMAND "read -p 'Press Enter to continue...' var"
+#endif
 /**
  * @brief Obtiene el sistema operativo en el que se está ejecutando el programa.
  * @return El sistema operativo en el que se está ejecutando el programa.
@@ -41,7 +45,7 @@ void clear_console(){
 void message(string w){
     clear_console();
     cout << w << endl;
-    system("read -p 'Press Enter to continue...' var");
+    system(PAUSE_COMMAND);
 }
 /**
  * @brief Valida y obtiene un número entero ingresado por el usuario.

@@ -11,6 +11,10 @@ using std::numeric_limits;
 using std::streamsize;
 using std::set;
 
+/**
+ * @brief Obtiene el sistema operativo en el que se está ejecutando el programa.
+ * @return El sistema operativo en el que se está ejecutando el programa.
+*/
 string getOperatingSystem() {
     #ifdef _WIN32
         return "Windows";
@@ -22,12 +26,14 @@ string getOperatingSystem() {
         return "Unknown";
     #endif
 }
+/**
+ * @brief Limpia la consola.
+*/
 void clear_console(){
     string os = getOperatingSystem();
     if(os == "Windows") system("cls");
     else system("clear");
 }
-
 /**
  * @brief Muestra un mensaje en la consola y espera a que el usuario presione Enter.
  * @param w El mensaje a mostrar.

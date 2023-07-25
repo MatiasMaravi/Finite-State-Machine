@@ -2,6 +2,11 @@
 #include<vector>
 #include<string>
 using namespace std;
+
+/**
+ * @class State
+ * @brief Clase que representa un estado de un autómata
+*/
 class State{
     int id;
 public:
@@ -14,12 +19,15 @@ State::State(int id){
 int State::get_id(){
     return this->id;
 }
-
+/**
+ * @class Transition
+ * @brief Clase que representa una función de transición de un autómata
+*/
 class Transition{
-    set<State*> states;
-    set<char> alphabet;
-    vector<pair<pair<State*, char>, State*>> transitions;
-    bool alltransitions;
+    set<State*> states;// Conjunto de estados del autómata
+    set<char> alphabet;// Conjunto de símbolos
+    vector<pair<pair<State*, char>, State*>> transitions;// Transiciones
+    bool alltransitions;// Indica si se han creado todas las transiciones
     public:
     Transition(set<State*> states, set<char> alphabet);
     bool make_transition(State* s, char c, State* s2);
@@ -58,13 +66,17 @@ State* Transition::next_state(State* s, char c){
     }
     return nullptr;
 }
+/**
+ * @class Automata
+ * @brief Clase que representa un autómata
+*/
 class Automata{
-    set<State*> states;
-    State* initialState;
-    set<State*> finalStates;
-    set<char> alphabet;
-    Transition* function_transition;
-    static Automata* instance;
+    set<State*> states;// Conjunto de estados del autómata
+    State* initialState;// Estado inicial
+    set<State*> finalStates;// Conjunto de estados finales
+    set<char> alphabet;// Conjunto de símbolos
+    Transition* function_transition;// Función de transición
+    static Automata* instance;// Instancia del autómata
     Automata(State* init, set<State*> final, set<char> alphabet, set<State*> states, Transition* function_transition){
         this->initialState = init;
         this->finalStates = final;

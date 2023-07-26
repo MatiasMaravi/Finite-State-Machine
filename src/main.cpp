@@ -1,52 +1,13 @@
-#include<iostream>
-#include<cstdlib>
-#include<limits>
 #include "Automata.h"
+#include "tools.h"
 using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
-using std::system;
 using std::numeric_limits;
 using std::streamsize;
 using std::set;
-#ifdef _WIN32
-#define PAUSE_COMMAND "pause"
-#else
-#define PAUSE_COMMAND "read -p 'Press Enter to continue...' var"
-#endif
-/**
- * @brief Obtiene el sistema operativo en el que se está ejecutando el programa.
- * @return El sistema operativo en el que se está ejecutando el programa.
-*/
-string getOperatingSystem(){
-    #ifdef _WIN32
-        return "Windows";
-    #elif __APPLE__
-        return "macOS";
-    #elif __linux__
-        return "Linux";
-    #else
-        return "Unknown";
-    #endif
-}
-/**
- * @brief Limpia la consola.
-*/
-void clear_console(){
-    string os = getOperatingSystem();
-    if(os == "Windows") system("cls");
-    else system("clear");
-}
-/**
- * @brief Muestra un mensaje en la consola y espera a que el usuario presione Enter.
- * @param w El mensaje a mostrar.
-*/
-void message(string w){
-    clear_console();
-    cout << w << endl;
-    system(PAUSE_COMMAND);
-}
+
 /**
  * @brief Valida y obtiene un número entero ingresado por el usuario.
  *
@@ -90,13 +51,30 @@ string menu(){
  * @param a El autómata a ejecutar.
  * @return true si la palabra es aceptada por el autómata, false en caso contrario.
  */
-bool run_automata(Automata* a){
+bool run_automata(Automata* a,string op){
     clear_console();
     string word = "";
     cout << "Enter word: ";
     cin >> word;
-    return (a->run(word))?true:false;
+    sleep_console("Processing word");
+    if (op == "1") return (a->fast_run(word))?true:false;
+    else if (op == "2") {
+        pair <string,bool> aux = a->pretty_run(word);
+        if (!aux.second){
+            cout << "Sorry, " << aux.first <<" is not a final state" <<endl;
+            std::this_thread::sleep_for(std::chrono::seconds(3));
+            return false;
+        }else{
+            cout << "Congratulations, " << aux.first <<" is a final state" <<endl;
+            std::this_thread::sleep_for(std::chrono::seconds(3));
+            return true;
+        }
+    }else{
+        message("Invalid option");
+        return false;
+    }
 }
+
 /** 
  * @brief Valida y obtiene un caracter ingresado por el usuario.
  * @param i El número de caracter a ingresar.
@@ -157,7 +135,9 @@ State* get_init(set<State*> states){
         cout << "Enter initial state: ";
         id = validar_numero(id);
     }
-    return get_state(states, id);
+    State* init = get_state(states, id);
+    init->set_initial(true);
+    return init;
 }
 /**
  * @brief Obtiene el conjunto de estados finales de un autómata.
@@ -185,7 +165,9 @@ set<State*> get_finals(set<State*> states){
             cout << "Enter final state "<<i+1<<": ";
             id = validar_numero(id);
         }
-        finals.insert(get_state(states, id));
+        State* s = get_state(states, id);
+        s->set_final(true);
+        finals.insert(s);
         ids.insert(id);
     }
     return finals;
@@ -244,6 +226,17 @@ Automata* create_automata(){
     Automata* a = a->getInstance(init, finals, alphabet, states, t);
     return a;
 }
+string menu_run(Automata* a){
+    clear_console();
+    string choice;
+    cout<<"Running automata"<<endl;
+    cout<<"1. Run fast"<<endl;
+    cout<<"2. Run pretty"<<endl;
+    cout<<"3. Back"<<endl;
+    cout<<"Enter choice: ";
+    cin>>choice;
+    return choice;
+}
 
 int main(){
     string opcion = menu();
@@ -259,8 +252,17 @@ int main(){
                 opcion = menu();
                 continue;
             }else{
-                if(run_automata(a)) message("Accept");
-                else message("Reject");
+                string op = menu_run(a);
+                if(op == "3") {
+                    opcion = menu();
+                    continue;}
+                else{
+                    if(run_automata(a,op)){
+                        message("Accepted word");
+                    }else{
+                        message("Rejected word");
+                    }
+                }
             }
         }
         else {

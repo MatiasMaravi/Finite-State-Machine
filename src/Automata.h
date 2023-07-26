@@ -128,7 +128,7 @@ pair<string,bool> Automata::pretty_run(string word){
         current = function_transition->next_state(current, i);
         std::cout << "\x1b[2J\x1b[H"; // Limpia la pantalla y coloca el cursor en la posición (1,1)
         std::cout << "Word: " << word.substr(0,aux) << std::endl;
-        std::cout << "Estado actual: " << "q" << current->get_id() << std::endl;
+        std::cout << "Current State: " << "q" << current->get_id() << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
         if(current == nullptr) return make_pair("qx",false);
         aux++;

@@ -51,27 +51,30 @@ string menu(){
  * @param a El autómata a ejecutar.
  * @return true si la palabra es aceptada por el autómata, false en caso contrario.
  */
-bool run_automata(Automata* a,string op){
+void run_automata(Automata* a,string op){
     clear_console();
     string word = "";
     cout << "Enter word: ";
     cin >> word;
     sleep_console("Processing word");
-    if (op == "1") return (a->fast_run(word))?true:false;
+    if (op == "1"){
+        if(a->fast_run(word)){
+            message("Accepted word");
+        }else{
+            message("Rejected word");
+        }
+    } 
     else if (op == "2") {
         pair <string,bool> aux = a->pretty_run(word);
         if (!aux.second){
             cout << "Sorry, " << aux.first <<" is not a final state" <<endl;
             std::this_thread::sleep_for(std::chrono::seconds(3));
-            return false;
+            message("Rejected word");
         }else{
             cout << "Congratulations, " << aux.first <<" is a final state" <<endl;
             std::this_thread::sleep_for(std::chrono::seconds(3));
-            return true;
+            message("Accepted word");
         }
-    }else{
-        message("Invalid option");
-        return false;
     }
 }
 
@@ -253,16 +256,12 @@ int main(){
                 continue;
             }else{
                 string op = menu_run(a);
-                if(op == "3") {
+                if(op == "1" || op == "2") run_automata(a,op);
+                else if(op=="3"){
                     opcion = menu();
-                    continue;}
-                else{
-                    if(run_automata(a,op)){
-                        message("Accepted word");
-                    }else{
-                        message("Rejected word");
-                    }
+                    continue;
                 }
+                else message("Invalid option");
             }
         }
         else {
